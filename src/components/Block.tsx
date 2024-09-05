@@ -1,13 +1,20 @@
 import React from 'react'
 
 interface BlockProps {
-    value?: string | null
-    onClick?: () => void
+  onClick: () => void
+  value: string | null
+  isWinningBlock?: boolean
 }
 
-const Block: React.FC<BlockProps> = (props) => {
+const Block: React.FC<BlockProps> = ({ onClick, value, isWinningBlock }) => {
+  const blockClass = value ? value.toLowerCase() : ''
   return (
-    <div className='block' onClick={props.onClick}>{props.value}</div>
+    <div
+      className={`block ${blockClass} ${isWinningBlock ? 'winning-block' : ''}`}
+      onClick={onClick}
+    >
+      {value}
+    </div>
   )
 }
 

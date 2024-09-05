@@ -4,11 +4,12 @@ import Block from './components/Block'
 
 
 function App() {
-  const[state, setState] = useState(Array(9).fill(null))
-  const[currentTurn, setCurrentTurn] = useState('X')
+  const [state, setState] = useState(Array(9).fill(null))
+  const [currentTurn, setCurrentTurn] = useState('X')
   const [winner, setWinner] = useState<string | null>(null)
+  const [winningBlocks, setWinningBlocks] = useState<number[] | null>(null)
 
-  const checkWinner = (state:any[]) => {
+  const checkWinner = (state: Array<string | null>): 'X' | 'O' | null => {
     const win = [
       [0,1,2],
       [3,4,5],
@@ -21,8 +22,10 @@ function App() {
     ]
     for(let i = 0; i < win.length; i++ ){
       const [a,b,c] = win[i]
-      if(state[a] !== null && state[a] === state[b] && state[a] === state[c])
-        return state[a]
+      if (state[a] && state[a] === state[b] && state[a] === state[c]){
+        setWinningBlocks([a, b, c])
+        return state[a] as 'X' | 'O'
+      }
     }
     return null
   }
@@ -37,10 +40,10 @@ function App() {
     const win = checkWinner(stateCopy)
     if (win) {
       setWinner(win)
-      setTimeout(() => {
-        alert(`${win} won`)
-        resetGame()
-      }, 0)
+      // setTimeout(() => {
+      //   alert(`${win} won`)
+      //   resetGame()
+      // }, 0)
       return
     }
 
@@ -58,27 +61,39 @@ function App() {
     setState(Array(9).fill(null))
     setCurrentTurn('X')
     setWinner(null)
+    setWinningBlocks(null)
   }
 
   return (
-    <div className='board'>
-      <div className="row">
-        <Block onClick={()=> handleBlockClick(0)} value={state[0]}/>
-        <Block onClick={()=> handleBlockClick(1)} value={state[1]}/>
-        <Block onClick={()=> handleBlockClick(2)} value={state[2]}/>
-      </div> 
-      <div className="row">
-        <Block onClick={()=> handleBlockClick(3)} value={state[3]}/>
-        <Block onClick={()=> handleBlockClick(4)} value={state[4]}/>
-        <Block onClick={()=> handleBlockClick(5)} value={state[5]}/>
+    <div className='home'>
+      <div className='heading'>
+        <h1>Let's play<br></br>
+        The Tic-tac-toe 
+        Game!</h1>
+        <div>
+          <button onClick={resetGame}>Reset Game</button>
+        </div>
       </div>
-      <div className="row">
-        <Block onClick={()=> handleBlockClick(6)} value={state[6]}/>
-        <Block onClick={()=> handleBlockClick(7)} value={state[7]}/>
-        <Block onClick={()=> handleBlockClick(8)} value={state[8]}/>
-      </div>
-      <div>
-        <button onClick={resetGame}>Reset Game</button>
+      <div className='board'>
+        <div className='header'>
+          <h2 className={`player-x ${currentTurn === 'X' ? 'active' : ''}`}>Player X</h2>
+          <h2 className={`player-o ${currentTurn === 'O' ? 'active' : ''}`}>Player O</h2>
+        </div>
+        <div className="row1">
+          <Block onClick={()=> handleBlockClick(0)} value={state[0]} isWinningBlock={winningBlocks?.includes(0)}/>
+          <Block onClick={()=> handleBlockClick(1)} value={state[1]} isWinningBlock={winningBlocks?.includes(1)}/>
+          <Block onClick={()=> handleBlockClick(2)} value={state[2]} isWinningBlock={winningBlocks?.includes(2)}/>
+        </div> 
+        <div className="row2">
+          <Block onClick={()=> handleBlockClick(3)} value={state[3]} isWinningBlock={winningBlocks?.includes(3)}/>
+          <Block onClick={()=> handleBlockClick(4)} value={state[4]} isWinningBlock={winningBlocks?.includes(4)}/>
+          <Block onClick={()=> handleBlockClick(5)} value={state[5]} isWinningBlock={winningBlocks?.includes(5)}/>
+        </div>
+        <div className="row3">
+          <Block onClick={()=> handleBlockClick(6)} value={state[6]} isWinningBlock={winningBlocks?.includes(6)}/>
+          <Block onClick={()=> handleBlockClick(7)} value={state[7]} isWinningBlock={winningBlocks?.includes(7)}/>
+          <Block onClick={()=> handleBlockClick(8)} value={state[8]} isWinningBlock={winningBlocks?.includes(8)}/>
+        </div>
       </div>
     </div>
   );
